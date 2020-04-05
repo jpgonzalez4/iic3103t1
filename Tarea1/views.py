@@ -22,6 +22,7 @@ def index(request):
     ch = [d for d in characters['results'] if d['id'] in show]
     aux2 = dict()
     for i in range(0, len(ch)):
+        aux2['id{}'.format(i)] = (ch[i]['id'])
         aux2['image{}'.format(i)] = (ch[i]['image'])
         aux2['name{}'.format(i)] = (ch[i]['name'])
     
@@ -30,7 +31,7 @@ def index(request):
     ep_list = list ()
     for i in episodes['results']:
         episode = dict()
-        episode['id'] = i['id']
+        episode['id'] = int(i['id'])
         episode['name'] = i['name']
         episode['air_date'] = i['air_date']
         episode['episode'] = i['episode']
@@ -43,7 +44,7 @@ def index(request):
         aux = response.json()
         for i in aux['results']:
             episode = dict()
-            episode['id'] = i['id']
+            episode['id'] = int(i['id'])
             episode['name'] = i['name']
             episode['air_date'] = i['air_date']
             episode['episode'] = i['episode']
@@ -58,6 +59,79 @@ def index(request):
 
     return HttpResponse(documento)
 
+def search(request):
+    if request.method == "GET":
+        input = request.GET['input']
+        response = requests.get("https://rickandmortyapi.com/api/character/")
+        characters = response.json()
+        aux = characters['info']
+        while aux['next'] != '':
+            response = requests.get(aux['next'])
+            aux = response.json()
+            for i in aux['results']:
+                characters['results'].append(i)
+            aux = aux['info'] 
+
+        response = requests.get("https://rickandmortyapi.com/api/episode/")
+        episodes = response.json()
+        aux = episodes['info']
+        while aux['next'] != '':
+            response = requests.get(aux['next'])
+            aux = response.json()
+            for i in aux['results']:
+                episodes['results'].append(i)
+            aux = aux['info'] 
+
+        response = requests.get("https://rickandmortyapi.com/api/location/")
+        locations = response.json()
+        aux = locations['info']
+        while aux['next'] != '':
+            response = requests.get(aux['next'])
+            aux = response.json()
+            for i in aux['results']:
+                locations['results'].append(i)
+            aux = aux['info']
+        
+        input = input.lower()
+        
+        l_episodes = list()
+        for episode in episodes['results']:
+            if input in episode['name'].lower():
+                l_episodes.append(episode)
+
+        l_characters = list()
+        for character in characters['results']:
+            if input in character['name'].lower():
+                l_characters.append(character)
+        
+        l_locations = list()
+        for location in locations['results']:
+            if input in location['name'].lower():
+                l_locations.append(location)
+        
+        search = dict()
+        search['characters'] = l_characters
+        search['episodes'] = l_episodes
+        search['locations'] = l_locations
+
+        doc_externo = loader.get_template('search.html')
+        documento = doc_externo.render(search)
+
+        return HttpResponse(documento)
+    else:
+        l_characters = list()
+        l_episodes = list()
+        l_locations = list()
+        search = dict()
+        search['characters'] = l_characters
+        search['episodes'] = l_episodes
+        search['locations'] = l_locations
+
+        doc_externo = loader.get_template('search.html')
+        documento = doc_externo.render(search)
+
+        return HttpResponse(documento)
+
 def contact(request):
 
     doc_externo = loader.get_template('contact.html')
@@ -66,8 +140,8 @@ def contact(request):
 
     return HttpResponse(documento)
 
-def episode(request, **kwargs):
-    response = requests.get("https://rickandmortyapi.com/api/episode/{}".format(str(kwargs['number'])))
+def episode(request, input):
+    response = requests.get("https://rickandmortyapi.com/api/episode/{}".format(str(input)))
     episode = response.json()
     show = list()
     for i in episode['characters']:
@@ -96,8 +170,8 @@ def episode(request, **kwargs):
 
     return HttpResponse(documento)
 
-def character(request, **kwargs):
-    response = requests.get("https://rickandmortyapi.com/api/character/{}".format(str(kwargs['number'])))
+def character(request, input):
+    response = requests.get("https://rickandmortyapi.com/api/character/{}".format(str(input)))
     character = response.json()
 
     if character['location']['url'] != '':
@@ -121,7 +195,7 @@ def character(request, **kwargs):
         response = requests.get("https://rickandmortyapi.com/api/episode/{}".format(i))
         episode = response.json()
         aux = dict()
-        aux['id'] = episode['id']
+        aux['id'] = int(episode['id'])
         aux['name'] = episode['name']
         aux['air_date'] = episode['air_date']
         aux['episode'] = episode['episode']
@@ -145,8 +219,8 @@ def character(request, **kwargs):
 
     return HttpResponse(documento)
 
-def location(request, **kwargs):
-    response = requests.get("https://rickandmortyapi.com/api/location/{}".format(str(kwargs['number'])))
+def location(request, input):
+    response = requests.get("https://rickandmortyapi.com/api/location/{}".format(str(input)))
     location = response.json()
     
     ch_list = list()
@@ -176,7 +250,6 @@ def location(request, **kwargs):
     return HttpResponse(documento)
 
 def episodes(request):
-    
     response = requests.get("https://rickandmortyapi.com/api/episode/")
     episod = response.json()
     ep_list = list ()

@@ -15,18 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Tarea1.views import index, contact, episode, character, location, episodes, locations, characters
+from Tarea1.views import index, contact, episode, character, location, episodes, locations, characters, search
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index),
-    path('contact/', contact),
-    path('episodes/', episodes),
-    path('locations/', locations),
-    path('characters/', characters),
-    path('episode/<int:number>', episode),
-    path('character/<int:number>', character),
-    path('location/<int:number>', location)
+    path('contact/', contact, name='contact'),
+    path('episodes/', episodes, name='episodes'),
+    path('locations/', locations, name='locations'),
+    path('characters/', characters, name='characters'),
+    path('episode/<int:input>', episode, name='episode'),
+    path('character/<int:input>', character, name='character'),
+    path('location/<int:input>', location, name='location'),
+    path('search/', search, name='search')
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
