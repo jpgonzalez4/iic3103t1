@@ -4,7 +4,7 @@ from random import randint
 import requests 
 
 def index(request):
-    response = requests.get("https://rickandmortyapi.com/api/character/")
+    response = requests.get("https://integracion-rick-morty-api.herokuapp.com/api/character/")
     characters = response.json()
     aux = characters['info']
     while aux['next'] != '':
@@ -26,7 +26,7 @@ def index(request):
         aux2['image{}'.format(i)] = (ch[i]['image'])
         aux2['name{}'.format(i)] = (ch[i]['name'])
     
-    response = requests.get("https://rickandmortyapi.com/api/episode/")
+    response = requests.get("https://integracion-rick-morty-api.herokuapp.com/api/episode/")
     episodes = response.json()
     ep_list = list ()
     for i in episodes['results']:
@@ -62,7 +62,7 @@ def index(request):
 def search(request):
     if request.method == "GET":
         input = request.GET['input']
-        response = requests.get("https://rickandmortyapi.com/api/character/")
+        response = requests.get("https://integracion-rick-morty-api.herokuapp.com/api/character/")
         characters = response.json()
         aux = characters['info']
         while aux['next'] != '':
@@ -72,7 +72,7 @@ def search(request):
                 characters['results'].append(i)
             aux = aux['info'] 
 
-        response = requests.get("https://rickandmortyapi.com/api/episode/")
+        response = requests.get("https://integracion-rick-morty-api.herokuapp.com/api/episode/")
         episodes = response.json()
         aux = episodes['info']
         while aux['next'] != '':
@@ -82,7 +82,7 @@ def search(request):
                 episodes['results'].append(i)
             aux = aux['info'] 
 
-        response = requests.get("https://rickandmortyapi.com/api/location/")
+        response = requests.get("https://integracion-rick-morty-api.herokuapp.com/api/location/")
         locations = response.json()
         aux = locations['info']
         while aux['next'] != '':
@@ -141,7 +141,7 @@ def contact(request):
     return HttpResponse(documento)
 
 def episode(request, input):
-    response = requests.get("https://rickandmortyapi.com/api/episode/{}".format(str(input)))
+    response = requests.get("https://integracion-rick-morty-api.herokuapp.com/api/episode/{}".format(str(input)))
     episode = response.json()
     show = list()
     for i in episode['characters']:
@@ -149,7 +149,7 @@ def episode(request, input):
         show.append(int(character[5]))
 
     l_characters = list()
-    response = requests.get("https://rickandmortyapi.com/api/character/")
+    response = requests.get("https://integracion-rick-morty-api.herokuapp.com/api/character/")
     characters = response.json()
     for i in characters['results']:
         if i['id'] in show:
@@ -171,7 +171,7 @@ def episode(request, input):
     return HttpResponse(documento)
 
 def character(request, input):
-    response = requests.get("https://rickandmortyapi.com/api/character/{}".format(str(input)))
+    response = requests.get("https://integracion-rick-morty-api.herokuapp.com/api/character/{}".format(str(input)))
     character = response.json()
 
     if character['location']['url'] != '':
@@ -192,7 +192,7 @@ def character(request, input):
     
     aux2 = list()
     for i in ep_list:
-        response = requests.get("https://rickandmortyapi.com/api/episode/{}".format(i))
+        response = requests.get("https://integracion-rick-morty-api.herokuapp.com/api/episode/{}".format(i))
         episode = response.json()
         aux = dict()
         aux['id'] = int(episode['id'])
@@ -220,7 +220,7 @@ def character(request, input):
     return HttpResponse(documento)
 
 def location(request, input):
-    response = requests.get("https://rickandmortyapi.com/api/location/{}".format(str(input)))
+    response = requests.get("https://integracion-rick-morty-api.herokuapp.com/api/location/{}".format(str(input)))
     location = response.json()
     
     ch_list = list()
@@ -230,7 +230,7 @@ def location(request, input):
 
     aux2 = list()
     for i in ch_list:
-        response = requests.get("https://rickandmortyapi.com/api/character/{}".format(i))
+        response = requests.get("https://integracion-rick-morty-api.herokuapp.com/api/character/{}".format(i))
         character = response.json()
         aux = dict()
         aux['id'] = character['id']
@@ -250,7 +250,7 @@ def location(request, input):
     return HttpResponse(documento)
 
 def episodes(request):
-    response = requests.get("https://rickandmortyapi.com/api/episode/")
+    response = requests.get("https://integracion-rick-morty-api.herokuapp.com/api/episode/")
     episod = response.json()
     ep_list = list ()
     for i in episod['results']:
@@ -284,7 +284,7 @@ def episodes(request):
     return HttpResponse(documento)
 
 def characters(request):
-    response = requests.get("https://rickandmortyapi.com/api/character/")
+    response = requests.get("https://integracion-rick-morty-api.herokuapp.com/api/character/")
     characters = response.json()
     aux = characters['info']
     while aux['next'] != '':
@@ -310,7 +310,7 @@ def characters(request):
     return HttpResponse(documento)
 
 def locations(request):
-    response = requests.get("https://rickandmortyapi.com/api/location/")
+    response = requests.get("https://integracion-rick-morty-api.herokuapp.com/api/location/")
     loc = response.json()
     loc_list = list ()
     for i in loc['results']:
